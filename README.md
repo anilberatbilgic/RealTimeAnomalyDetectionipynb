@@ -1,6 +1,6 @@
-# 🚨 Real-Time Anomaly Detection
+# 🚨 Real-Time Anomaly Detection — Credit Card Fraud
 
-Streaming-style anomaly detection with Isolation Forest, simulating how outliers are flagged as data arrives over time.
+Catching fraudulent transactions in a **simulated live stream** with Isolation Forest, on a 284K-transaction dataset where only **0.17%** are fraud.
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-IsolationForest-orange.svg)
@@ -10,22 +10,22 @@ Streaming-style anomaly detection with Isolation Forest, simulating how outliers
 
 ## ⚡ Overview
 
-Anomaly detection matters wherever rare events signal trouble — fraud, equipment faults, network intrusions. This project trains an **Isolation Forest** and then replays the data as a live stream, scoring each incoming point and updating the visualization in real time.
+Fraud is **rare and unlabeled in the moment**, which makes it a natural fit for *unsupervised* anomaly detection. This project trains an **Isolation Forest** on normal transactions, then replays the data as a live stream — flagging suspicious transactions as they "arrive", like a real monitoring system.
 
 ## 📊 Dataset
 
-A tabular dataset of numeric features (loaded from Google Drive in Colab); each row is treated as one "tick" of an incoming data stream.
+**Credit Card Fraud Detection** (`creditcard.csv`): **284,807 transactions × 31 columns**, extremely imbalanced — **284,315 normal vs 492 fraud (0.17%)**. Features `V1`–`V28` are PCA-anonymized; `Time` and `Amount` are standardized into `scaled_time` / `scaled_amount`.
 
 ## 🧠 Approach
 
-1. **Preprocessing** — load the data, standardize features with `StandardScaler`.
-2. **Model** — fit an **Isolation Forest**, an unsupervised algorithm that isolates outliers using random partitioning.
-3. **Real-time simulation** — iterate through the data with a timing loop, scoring points one by one and refreshing a live plot (`clear_output`) to mimic a monitoring dashboard.
-4. **Evaluation** — summarize results with a `classification_report` and `confusion_matrix`.
+1. **Preprocessing** — scale `Time` and `Amount` with `StandardScaler`, drop the originals.
+2. **Model** — **Isolation Forest** (100 trees, `contamination=0.01`), fit on **normal transactions only** so anything that doesn't look normal is flagged.
+3. **Real-time simulation** — stream rows one at a time with a timing loop, scoring each point and refreshing a live plot (`clear_output`) to mimic a monitoring dashboard.
+4. **Evaluation** — `classification_report` and `confusion_matrix` against the true labels.
 
 ## 🛠️ Tech Stack
 
-`Python` · `pandas` · `numpy` · `scikit-learn` (IsolationForest, StandardScaler) · `matplotlib` · `seaborn`
+`Python` · `pandas` · `numpy` · `scikit-learn` (IsolationForest, StandardScaler, metrics) · `matplotlib` · `seaborn`
 
 ## ▶️ How to Run
 
@@ -34,7 +34,7 @@ pip install pandas numpy scikit-learn matplotlib seaborn
 jupyter notebook RealTimeAnomalyDetection.ipynb
 ```
 
-Point the data path to your CSV, then run the cells; the streaming loop animates the detection.
+Point the `creditcard.csv` path to your copy of the dataset, then run the cells; the streaming loop animates the detection.
 
 ---
 
@@ -42,16 +42,16 @@ Point the data path to your CSV, then run the cells; the streaming loop animates
 ## 🇹🇷 Türkçe
 
 ### Genel Bakış
-Anomali tespiti, nadir olayların sorun işaret ettiği her yerde önemlidir — dolandırıcılık, ekipman arızası, ağ saldırısı. Bu proje bir **Isolation Forest** eğitir, ardından veriyi canlı bir akış gibi yeniden oynatıp her gelen noktayı skorlar ve görselleştirmeyi gerçek zamanlı günceller.
+Dolandırıcılık **nadirdir ve o an etiketsizdir** — bu da onu *gözetimsiz* anomali tespiti için doğal bir aday yapar. Bu proje normal işlemler üzerinde bir **Isolation Forest** eğitir, ardından veriyi canlı bir akış gibi yeniden oynatarak şüpheli işlemleri "geldikçe" işaretler.
 
 ### Veri Seti
-Sayısal özniteliklerden oluşan tablo verisi (Colab'da Google Drive'dan yüklenir); her satır gelen veri akışının bir "anı" olarak işlenir.
+**Credit Card Fraud Detection** (`creditcard.csv`): **284.807 işlem × 31 sütun**, aşırı dengesiz — **284.315 normal, 492 dolandırıcılık (%0,17)**. `V1`–`V28` öznitelikleri PCA ile anonimleştirilmiş; `Time` ve `Amount` standartlaştırılarak `scaled_time` / `scaled_amount` üretilir.
 
 ### Yaklaşım
-1. **Ön işleme** — veri yüklenir, öznitelikler `StandardScaler` ile standartlaştırılır.
-2. **Model** — rastgele bölmelerle aykırı değerleri izole eden gözetimsiz **Isolation Forest** eğitilir.
-3. **Gerçek zamanlı simülasyon** — bir zamanlama döngüsüyle veride ilerlenir, noktalar tek tek skorlanır ve canlı grafik (`clear_output`) yenilenerek bir izleme panosu taklit edilir.
-4. **Değerlendirme** — sonuçlar `classification_report` ve `confusion_matrix` ile özetlenir.
+1. **Ön işleme** — `Time` ve `Amount`, `StandardScaler` ile ölçeklenir, orijinaller atılır.
+2. **Model** — **Isolation Forest** (100 ağaç, `contamination=0.01`), **yalnızca normal işlemler** üzerinde eğitilir; normale benzemeyen her şey işaretlenir.
+3. **Gerçek zamanlı simülasyon** — satırlar bir zamanlama döngüsüyle tek tek akıtılır, her nokta skorlanır ve canlı grafik (`clear_output`) yenilenerek izleme panosu taklit edilir.
+4. **Değerlendirme** — gerçek etiketlere karşı `classification_report` ve `confusion_matrix`.
 
 ### Teknolojiler
 `Python` · `pandas` · `numpy` · `scikit-learn` · `matplotlib` · `seaborn`
@@ -61,4 +61,4 @@ Sayısal özniteliklerden oluşan tablo verisi (Colab'da Google Drive'dan yükle
 pip install pandas numpy scikit-learn matplotlib seaborn
 jupyter notebook RealTimeAnomalyDetection.ipynb
 ```
-Veri yolunu kendi CSV'ne ayarla ve hücreleri çalıştır; akış döngüsü tespiti canlandırır.
+`creditcard.csv` yolunu kendi veri kopyana ayarla ve hücreleri çalıştır; akış döngüsü tespiti canlandırır.
